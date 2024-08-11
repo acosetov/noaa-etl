@@ -133,6 +133,7 @@ if cities_data:
     
     # Save the SQL insert statements for cities to a .sql file
     with open('insert_dim_locations.sql', 'w') as sql_file:
+        sql_file.write("-- Switch to the 'noaa' database\n\\c noaa\n\n")
         for sql in sql_inserts_cities:
             sql_file.write(sql + '\n')
         print("SQL insert statements for cities saved to 'insert_dim_locations.sql'")
@@ -151,6 +152,7 @@ if cities_data:
 
     # Save the SQL insert statements for stations to a .sql file
     with open('insert_dim_stations.sql', 'w') as sql_file:
+        sql_file.write("-- Switch to the 'noaa' database\n\\c noaa\n\n")
         for sql in sql_inserts_stations:
             sql_file.write(sql + '\n')
         print("SQL insert statements for stations saved to 'insert_dim_stations.sql'")
@@ -165,6 +167,7 @@ if data_types_data and 'results' in data_types_data:
 
     # Save the SQL insert statements for data types to a .sql file
     with open('insert_dim_datatypes.sql', 'w') as sql_file:
+        sql_file.write("-- Switch to the 'noaa' database\n\\c noaa\n\n")
         for sql in sql_inserts_data_types:
             sql_file.write(sql + '\n')
         print("SQL insert statements for data types saved to 'insert_dim_datatypes.sql'")
@@ -175,6 +178,7 @@ else:
 sql_insert = f"INSERT INTO dim_datasets (dataset_id, description) VALUES ('{DATA_SET_ID}', 'Daily Summaries');"
 
 # Save the SQL insert statement to a file
-with open('insert_dim_datasets.sql', 'w') as file:
-    file.write(sql_insert)
+with open('insert_dim_datasets.sql', 'w') as sql_file:
+    sql_file.write("-- Switch to the 'noaa' database\n\\c noaa\n\n")
+    sql_file.write(sql_insert)
     print("SQL insert statements for data types saved to 'insert_dim_datasets.sql'")
