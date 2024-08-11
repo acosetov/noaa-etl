@@ -46,7 +46,6 @@ The architecture of this ETL pipeline includes the following components:
 - **PostgreSQL**: The database used to store the cleaned data.
 - **Pandas**: Used for data cleaning and transformation.
 - **PyArrow**: For working with Parquet files.
-- **Boto3**: AWS SDK for Python, used to interact with Amazon S3.
 - **Requests**: For making HTTP requests to the NOAA API.
 - **Docker**: For containerizing the services.
 - **Docker Compose**: For orchestrating multi-container Docker applications.
