@@ -12,6 +12,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./create_db.sql:/docker-entrypoint-initdb.d/01_create_db.sql
       - ./init_tables.sql:/docker-entrypoint-initdb.d/02_init_tables.sql
+      - ./prepare_scripts/insert_dim_datasets.sql:/docker-entrypoint-initdb.d/03_insert_dim_datasets.sql
+      - ./prepare_scripts/insert_dim_datatypes.sql:/docker-entrypoint-initdb.d/04insert_dim_datatypes.sql
+      - ./prepare_scripts/insert_dim_locations.sql:/docker-entrypoint-initdb.d/05_insert_dim_locations.sql
+      - ./prepare_scripts/insert_dim_stations.sql:/docker-entrypoint-initdb.d/06_insert_dim_stations.sql
     ports:
       - "5432:5432"
     networks:
@@ -26,10 +30,10 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__FERNET_KEY: ""
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
-      AIRFLOW__CORE__TEST_CONNECTION: "enabled"
       AIRFLOW__WEBSERVER__WORKERS: 4
       _AIRFLOW_WWW_USER_USERNAME: airflow_admin
       _AIRFLOW_WWW_USER_PASSWORD: admin
+      AIRFLOW__CORE__TEST_CONNECTION: "enabled"
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -51,7 +55,6 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__FERNET_KEY: ""
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
-      AIRFLOW__CORE__TEST_CONNECTION: "enabled"
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -69,7 +72,6 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__FERNET_KEY: ""
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
-      AIRFLOW__CORE__TEST_CONNECTION: "enabled"
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs

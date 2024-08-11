@@ -14,6 +14,47 @@ $$;
 -- Switch to the 'noaa' database
 \c noaa
 
+
+-- Create the dim_datasets table
+CREATE TABLE IF NOT EXISTS dim_datasets (
+    dataset_id VARCHAR(10) PRIMARY KEY,
+    description VARCHAR(255)
+);
+
+-- Create the dim_datasets table
+CREATE TABLE dim_datatypes (
+    datatype_id VARCHAR(10) PRIMARY KEY,
+    description VARCHAR(255) NOT NULL
+);
+
+-- Create the dim_locations table
+CREATE TABLE IF NOT EXISTS dim_locations (
+    city_id VARCHAR(50) PRIMARY KEY,
+    dataset_id VARCHAR(10),
+    mindate DATE,
+    maxdate DATE,
+    name VARCHAR(100),
+    datacoverage DECIMAL(5, 4),
+    FOREIGN KEY (dataset_id) REFERENCES dim_datasets(dataset_id)
+);
+
+-- Create the dim_stations table
+CREATE TABLE IF NOT EXISTS dim_stations (
+    station_id VARCHAR(11) PRIMARY KEY,
+    dataset_id VARCHAR(10),
+    city_id VARCHAR(50),
+    name VARCHAR(100),
+    latitude DECIMAL(9,6),
+    longitude DECIMAL(9,6),
+    elevation DECIMAL(6,2),
+    elevation_unit VARCHAR(10),
+    mindate DATE,
+    maxdate DATE,
+    datacoverage DECIMAL(5,4),
+    FOREIGN KEY (dataset_id) REFERENCES dim_datasets(dataset_id),
+    FOREIGN KEY (city_id) REFERENCES dim_locations(city_id)
+);
+
 -- Create the dim_date table
 CREATE TABLE IF NOT EXISTS dim_date (
     date_id SERIAL PRIMARY KEY,
@@ -26,28 +67,13 @@ CREATE TABLE IF NOT EXISTS dim_date (
     quarter INT
 );
 
--- Create the dim_station table
-CREATE TABLE IF NOT EXISTS dim_station (
-    station_id VARCHAR(30) PRIMARY KEY,
-    station_name VARCHAR(255) 
-);
-
--- Create the dim_datatype table
-CREATE TABLE IF NOT EXISTS dim_datatype (
-    datatype_id VARCHAR(10) PRIMARY KEY,
-    datatype_description VARCHAR(255) 
-);
-
 -- Create the fact_weather table
 CREATE TABLE IF NOT EXISTS fact_weather (
-    weather_id SERIAL PRIMARY KEY,
-    date_id INT,
-    station_id VARCHAR(30),
-    datatype_id VARCHAR(10),
-    value INT,
-    attributes VARCHAR(255),
-    FOREIGN KEY (date_id) REFERENCES dim_date(date_id),
-    FOREIGN KEY (station_id) REFERENCES dim_station(station_id),
-    FOREIGN KEY (datatype_id) REFERENCES dim_datatype(datatype_id),
+    fact_id SERIAL PRIMARY KEY,
+    date_id INT REFERENCES dim_date(date_id),
+    datatype_id VARCHAR(10) REFERENCES dim_datatypes(datatype_id),
+    station_id VARCHAR(11) REFERENCES dim_stations(station_id),
+    attributes VARCHAR(50),
+    value DECIMAL(10, 2),
     UNIQUE (date_id, station_id, datatype_id)
 );
