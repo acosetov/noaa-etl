@@ -7,6 +7,8 @@ This project is designed to extract, transform, and load data from the NOAA (Nat
 - [Project Overview](#project-overview)
 - [Architecture](#architecture)
 - [Technologies Used](#technologies-used)
+- [Setup Instructions](#setup-instructions)
+- [Usage](#usage)
 
 ## Project Overview
 
@@ -49,3 +51,68 @@ The architecture of this ETL pipeline includes the following components:
 - **Requests**: For making HTTP requests to the NOAA API.
 - **Docker**: For containerizing the services.
 - **Docker Compose**: For orchestrating multi-container Docker applications.
+
+## Setup Instructions
+
+### Prerequisites
+
+- Docker and Docker Compose installed on your system.
+- AWS credentials configured for accessing S3.
+
+### Installation
+
+1. **Clone the repository**:
+
+    ```bash
+    git clone https://github.com/acosetov/noaa-etl.git
+    cd noaa-etl
+    ```
+2. **Build and start the services**:
+
+    Use Docker Compose to build and start all the services (PostgreSQL, Airflow, etc.):
+
+    ```bash
+    docker-compose up --build
+    ```
+
+    This command will build the Docker images and start the containers defined in the `docker-compose.yml` file.
+
+3. **Access the Airflow web server**:
+
+    The Airflow web server should be accessible at `http://localhost:8080`. Log in using the credentials you set upin our case `airflow_admin` as the username and `admin` as the password.
+
+    Once logged in, you need to set up the following environment variables and connections in Airflow:
+
+    - **Add Variables**:
+        1. `NOAA_API_TOKEN`: The API token for accessing the NOAA API.
+        2. `NOAA_S3_BUCKET`: The name of the S3 bucket where data is stored.
+
+        To add these, navigate to the **Admin > Variables** section in the Airflow UI and add the variables with their respective values.
+
+    - **Add Connections**:
+        1. **`noaa-db`**: PostgreSQL connection.
+            - Conn Id: `noaa-db`
+            - Conn Type: `Postgres`
+            - Host: The hostname or IP address of your PostgreSQL server (e.g., `postgres` if using Docker Compose).
+            - Schema: The database name (`POSTGRES_DB`).
+            - Login: The username for your database (`POSTGRES_USER`).
+            - Password: The password for your database (`POSTGRES_PASSWORD`).
+            - Port: The port number for your database (`POSTGRES_PORT`).
+
+        2. **`noaa-s3-bucket`**: AWS S3 connection.
+            - Conn Id: `noaa-s3-bucket`
+            - Conn Type: `S3`
+            - Extra: `{"aws_access_key_id":"your_access_key", "aws_secret_access_key":"your_secret_key"}`
+
+        To add these, navigate to the **Admin > Connections** section in the Airflow UI and configure the connections as specified.
+
+4. **Run the ETL pipeline**:
+
+    Trigger the DAG to start the ETL process either through the Airflow UI or by setting a schedule.
+
+## Usage
+
+To run the ETL pipeline, either manually trigger the DAG from the Airflow UI or set it up on a schedule to automatically run at specific intervals.
+
+1. **Manual Trigger**: Navigate to the Airflow web interface and trigger the DAG responsible for the ETL pipeline.
+2. **Automated Runs**: Configure the DAG with a schedule interval that suits your needs (e.g., daily, hourly).
