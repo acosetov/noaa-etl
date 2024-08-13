@@ -26,8 +26,7 @@ The architecture of this ETL pipeline includes the following components:
 1. **NOAA JSON API**: The source of raw weather data.
 2. **Amazon S3**: Used to store both raw and cleaned data files.
 3. **Apache Airflow**: Manages the ETL workflow, orchestrating the extraction, transformation, and loading processes.
-4. **EC2 Instances**: Used for data transformation tasks.
-5. **PostgreSQL**: The database where the cleaned data is loaded for further analysis.
+4. **PostgreSQL**: The database where the cleaned data is loaded for further analysis.
 
 ### Architecture Diagram
 
